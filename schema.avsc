@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "test",
+  "namespace": "spark_stream_test",
+  "fields": [
+    {"name": "ad_id", "type": "string"},
+    {"name": "timestamp", "type": "string"},
+    {"name": "clicks", "type": "int"},
+    {"name": "views", "type": "int"},
+    {"name": "cost", "type": "double"}
+  ]
+}
