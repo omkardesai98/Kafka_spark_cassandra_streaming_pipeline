@@ -28,7 +28,7 @@ avro_schema_str = """
 # Kafka parameters
 schema_registry_url = "http://localhost:8081"
 kafka_broker = "localhost:9092"
-topic = "test"
+topic = "ads_data"
 
 # Initialize Schema Registry Client and Avro Serializer
 # schema_registry_client = SchemaRegistryClient({'url': schema_registry_url})
