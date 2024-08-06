@@ -4,9 +4,6 @@ from pyspark.sql.avro.functions import from_avro
 from cassandra.query import SimpleStatement
 from cassandra.cluster import Cluster, NoHostAvailable
 
-
-
-
 # Initialize Spark session
 spark = SparkSession.builder \
     .appName("KafkaAvroConsumer") \
@@ -38,11 +35,12 @@ kafka_df1 = kafka_df.select(from_avro(col('value'), schema_avro).alias("data")) 
 
 result_df = kafka_df1.groupBy(window(col("current_timestamp"), "1 minute", "30 seconds"), col("ad_id")) \
     .agg(
-        sum("clicks").alias("total_clicks"),
-        sum("views").alias("total_views"),
-        avg("cost").alias("avg_cost_per_view")
-    ) \
+    sum("clicks").alias("total_clicks"),
+    sum("views").alias("total_views"),
+    avg("cost").alias("avg_cost_per_view")
+) \
     .select("window.start", "window.end", "ad_id", "total_clicks", "total_views", "avg_cost_per_view")
+
 
 def process_batch(batch_df, batch_id):
     max_retries = 3
@@ -70,18 +68,22 @@ def process_batch(batch_df, batch_id):
             avg_cost_per_view = row['avg_cost_per_view']
 
             # Query Cassandra
-            query = SimpleStatement(f"SELECT total_clicks, total_views, avg_cost_per_view FROM adsData WHERE ad_id = '{ad_id}'")
+            query = SimpleStatement(
+                f"SELECT total_clicks, total_views, avg_cost_per_view FROM adsData WHERE ad_id = '{ad_id}'")
             result = session.execute(query).one()
 
             if result:
                 new_total_clicks = result.total_clicks + total_clicks
                 new_total_views = result.total_views + total_views
-                new_avg_cost_per_view = (result.avg_cost_per_view * result.total_views + avg_cost_per_view * total_views) / new_total_views
+                new_avg_cost_per_view = (
+                                                    result.avg_cost_per_view * result.total_views + avg_cost_per_view * total_views) / new_total_views
 
-                update_query = SimpleStatement(f"UPDATE adsData SET total_clicks = {new_total_clicks}, total_views = {new_total_views}, avg_cost_per_view = {new_avg_cost_per_view} WHERE ad_id = '{ad_id}'")
+                update_query = SimpleStatement(
+                    f"UPDATE adsData SET total_clicks = {new_total_clicks}, total_views = {new_total_views}, avg_cost_per_view = {new_avg_cost_per_view} WHERE ad_id = '{ad_id}'")
                 session.execute(update_query)
             else:
-                insert_query = SimpleStatement(f"INSERT INTO adsData (ad_id, total_clicks, total_views, avg_cost_per_view) VALUES ('{ad_id}', {total_clicks}, {total_views}, {avg_cost_per_view})")
+                insert_query = SimpleStatement(
+                    f"INSERT INTO adsData (ad_id, total_clicks, total_views, avg_cost_per_view) VALUES ('{ad_id}', {total_clicks}, {total_views}, {avg_cost_per_view})")
                 session.execute(insert_query)
 
         # Clean up
@@ -90,10 +92,10 @@ def process_batch(batch_df, batch_id):
     except Exception as e:
         print(f"Error processing batch: {e}")
 
+
 query = result_df.writeStream \
     .foreachBatch(process_batch) \
     .outputMode("update") \
     .start()
 
 query.awaitTermination()
-
