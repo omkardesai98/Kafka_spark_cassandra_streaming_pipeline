@@ -1,9 +1,6 @@
-import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, sum, avg, window, current_timestamp
 from pyspark.sql.avro.functions import from_avro
-from cassandra.cluster import Cluster
-from cassandra.policies import RoundRobinPolicy
 from cassandra.query import SimpleStatement
 from cassandra.cluster import Cluster, NoHostAvailable
 
