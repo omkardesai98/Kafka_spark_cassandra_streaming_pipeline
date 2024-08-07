@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/spark_kafka_cassandra.iml" filepath="$PROJECT_DIR$/.idea/spark_kafka_cassandra.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../spark_kafka_cassandra/.idea/spark_kafka_mongo.iml" filepath="$PROJECT_DIR$/../spark_kafka_cassandra/.idea/spark_kafka_mongo.iml" />
     </modules>
   </component>
 </project>

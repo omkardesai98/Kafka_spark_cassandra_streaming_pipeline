@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.11 (spark_kafka_mongo)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (spark_kafka_mongo)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (pyspark_demo)" project-jdk-type="Python SDK" />
 </project>
